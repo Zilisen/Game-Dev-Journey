@@ -2,6 +2,16 @@
 
 [shadertoy](https://www.shadertoy.com/)
 [IQ大神的入门视频](https://www.youtube.com/watch?v=0ifChJ0nJfM)
+[IQ大神的博客](https://iquilezles.org/)
+[Shadertoy Tutorial](https://inspirnathan.com/posts/47-shadertoy-tutorial-part-1/)
+
+[图形计算机](https://www.desmos.com/calculator?lang=zh-CN)
+
+## 数学工具
+
+[desmos](https://www.desmos.com/calculator?lang=zh-CN)
+[DesmosMatrix](https://www.desmos.com/matrix?lang=zh-CN)
+[wolframalpha](https://www.wolframalpha.com/)
 
 ## Inigo Quilez入门
 
@@ -32,4 +42,11 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     fragColor = vec4(col,1.0);
 }
 ```
+
+## APIs
+
+### Step
+
+step(a, b):
+b > a ? 1 : 0
 
