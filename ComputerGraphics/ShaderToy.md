@@ -12,6 +12,11 @@
 [desmos](https://www.desmos.com/calculator?lang=zh-CN)
 [DesmosMatrix](https://www.desmos.com/matrix?lang=zh-CN)
 [wolframalpha](https://www.wolframalpha.com/)
+[math search](https://mathworld.wolfram.com/)
+
+## books
+
+[thebookofshaders smoothstep](https://thebookofshaders.com/glossary/?search=smoothstep)
 
 ## Inigo Quilez入门
 
@@ -49,4 +54,20 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
 
 step(a, b):
 b > a ? 1 : 0
+
+smoothstep(edge0, edge1, x):
+edge0: Specifies the value of the lower edge of the Hermite function.
+
+edge1: Specifies the value of the upper edge of the Hermite function.
+
+x: Specifies the source value for interpolation.
+
+t = clamp((x - edge0) / (edge1 - edge0), 0.0, 1.0);
+return t * t * (3.0 - 2.0 * t);
+
+## specific shapes
+
+### heart
+
+[formulas](https://mathworld.wolfram.com/HeartCurve.html)
 

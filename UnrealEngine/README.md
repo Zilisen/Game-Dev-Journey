@@ -9,3 +9,8 @@
 ## 问题
 
 - 为什么GameModeBase控制下的level无法触发BeginPlay事件,而GameMode可以?
+
+## 知识点
+
+[《InsideUE4》UObject](https://zhuanlan.zhihu.com/p/24319968)
+
