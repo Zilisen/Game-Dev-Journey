@@ -210,3 +210,82 @@ void ATestTaskGraphActor::CreateTask(FString TaskName, const TArray<TGraphTask<F
 
 ### 16.后处理之轮廓描边
 
+==todo==
+方法（1）：对需要描边的物体开启自定义深度缓存，物体所在区域会出现填充的具有深度信息的缓存区，通过后期处理对相邻像素进行采样来执行简单的深度比较，如果邻居有深度信息，但像素没有，就将其着色为轮廓线颜色。
+
+![法1](Interview_img/Interview_2023-11-12-15-37-38.png)
+
+方法（2）：获取场景法线向量后，通过其中一个做一点点UV偏移，是两个结果做差，颜色值越接近，插值越小，相反越大，而一般需要描边的位置就是向量相差较大的像素点，再用基础颜色加上这个差值就会出现描边效果。
+
+![法2](Interview_img/Interview_2023-11-12-15-38-03.png)
+
+### 17.蓝图大量连线为何会比 C++ 慢很多
+
+[link](https://www.bilibili.com/read/cv4410697/)
+蓝图的消耗主要是在节点之间，蓝图连线触发的消耗是一致的，但节点运行的消耗是通过C++ , 节点不同就有所不同 ，所以蓝图中连线很多时会显著降低运行效率。
+
+### 18.模型闪烁问题如何解决
+
+当两个面共面时，会出现闪面现象。使用UE4材质中 Pixel Depth Offset 节点，进行像素偏移，达到共面不闪面的效果。
+
+### 19.虚幻内使用的光照模型
+
+PBR，基于物理的光照。
+
+### 20.slate中常用的控件
+
+SHorizontalBox：水平框
+
+SVerticalBox：垂直框
+
+SUniformGridPanel：统一网格面板，均匀地垂直和水平分发子控件的面板
+
+SWrapBox：包围盒，水平排列控件的盒
+
+### 21.反射的作用
+
+[《InsideUE4》UObject（十三）类型系统-反射实战](https://zhuanlan.zhihu.com/p/61042237)
+反射实现来支持引擎的动态功能，如垃圾回收、序列化、网络复制和蓝图/C++通信等。
+
+### 22.结构体中是否可以使用 UFUNCTION()
+
+不可以。反射系统不支持结构体中的函数，即使在 C++ 类和结构中实际上也具有与类相同的功能，UE4约定将结构限制为仅包含数据结构，这种做法实际上赋予结构更多的存在感。
+
+### 23. UE 中垃圾回收的原理
+
+UE4 采用了标记-清扫的垃圾回收方式，是一种经典的垃圾回收方式。一次垃圾回收分为两个阶段。第一阶段从一个根集合出发，遍历所有可达对象，遍历完成后就能标记出可达对象和不可达对象了，这个阶段会在一帧内完成。第二阶段会渐进式的清理这些不可达对象，因为不可达的对象将永远不能被访问到，所以可以分帧清理它们，避免一下子清理很多 UObject，比如 map 卸载时，发生明显的卡顿。
+
+### 24. UE 中有哪几种容器
+
+**TArray**：是 UE4 中最常用的容器类，负责同类型其他对象（称为"元素"）序列的所有权和组织。由于TArray是一个序列，其元素的排序定义明确，其函数用于确定性地操纵此类对象及其顺序。
+
+**TMap**：继TArray之后，UE4 中最常用的容器是TMap。TMap主要由两个类型定义（一个键类型和一个值类型），以关联对的形式存储在映射中。与TSet类似，它们的结构均基于对键进行散列运算。但与TSet不同的是，此容器将数据存储为键值对（TPair<KeyType, ValueType>），只将键用于存储和获取。
+
+**TSet**：是一种快速容器类，（通常）用于在排序不重要的情况下存储唯一元素。TSet类似于TMap和TMultiMap，但有一个重要区别：TSet是通过对元素求值的可覆盖函数，使用数据值本身作为键，而不是将数据值与独立的键相关联。TSet可以非常快速地添加、查找和删除元素（恒定时间）。默认情况下，TSet不支持重复的键，但使用模板参数可激活此行为。
+
+**TList**：简单的单链表模板。
+
+### 25.gameplay 的框架
+
+UE 的游戏世界构成层级为：
+
+- GameInstance：游戏实例，由 GameEngine 创造出来，主要用于管理世界切换，UI的加载，控制台命令和额外的逻辑，初始化/关闭引擎，修改GameMode，在线会话管理等一些全局性的内容。
+- World：游戏世界，常用结构体 FWorldContext 记录了游戏世界的各种信息使用在游戏世界切换等功能。
+- Level：一个游戏世界，可以分成多个 Level，比如将游戏场景分成一个 Level，灯光分成一个 Level 等等，这样有利于美术师进行场景搭建。关卡也分为 Persistence Level 和 Streaming Level，Persistence Level 是建立我们世界的主Level，Streaming Level 是作为部分内容的 Level 按照我们定义的规则加载到 Persistence Level 里。
+- GameMode：定义游戏规则，存在于每个 World/Level 中，并且只在服务器上，通过GameState来传递信息。
+- Actor：所有能放到游戏场景中的对象的基类都是 AActor。
+- Component：表现 Actor 的各种构成部分，UE 中的 Component 类能够附加到 Actor 上。
+
+Gameplay 的 3C 概念，就是 Character、Camera、Control。- Character 表现游戏世界中的玩家，拥有游戏世界中最复杂的行为，对于程序员来说，要负责处理角色的移动，动画，皮肤（装备）等。Camera 处理游戏视角，表现游戏世界，第一人称，第三人称，FOV，VFX，后处理，抖动等。- Control 处理输入（来自鼠标键盘，手柄，模拟器等，以及输入模式例如单击、按住、双击），匹配输入逻辑（按键映射），处理回应输入的逻辑，UI交互，以及物理模拟，AI驱动等。
+
+### 26.Unreal 中使用的光线追踪方法有哪些？
+
+分为实时光线跟踪和混合光线跟踪两种方式。
+UE5的Lumen
+
+### 27.GAS
+
+[虚幻GAS系统快速入门](https://zhuanlan.zhihu.com/p/486808688)
+[官方文档](https://docs.unrealengine.com/4.27/zh-CN/InteractiveExperiences/GameplayAbilitySystem/)
+[GAS插件介绍（入门篇） | 伍德 大钊](https://www.bilibili.com/video/BV1X5411V7jh/?vd_source=946c21f5d056f6b7272a82752dccb078)
+
