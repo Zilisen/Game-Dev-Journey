@@ -1,0 +1,35 @@
+# UE4性能优化
+
+[link](https://www.bilibili.com/video/BV1FV411G72Q/?spm_id_from=333.788&vd_source=946c21f5d056f6b7272a82752dccb078)
+难度：:star:
+价值：:star::star::star:
+
+## 准备
+
+环境：
+引擎版本：4.27.2
+Renderer: deferred
+RHI: DirectX12, Thread enabled
+Platform: Windows
+
+一些概念：
+Cpu Bound下的命令和工具
+Gpu Bound下的命令和工具
+数据可视化工具
+第三方插件
+其他辅助
+
+分享目标:
+使用频率高
+专注UE4的工具集
+
+## 帧数
+
+帧数：全版本适用的工具
+![xbox](UE4性能优化_img/UE4性能优化_2023-11-20-17-21-56.png)
+
+帧数：带Console命令的版本
+![console](UE4性能优化_img/UE4性能优化_2023-11-20-17-24-51.png)
+
+
+
